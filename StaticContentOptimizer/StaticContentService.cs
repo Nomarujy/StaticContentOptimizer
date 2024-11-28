@@ -7,16 +7,22 @@ using StaticContentOptimizer.ContentOptimizers;
 
 namespace StaticContentOptimizer
 {
-    internal class StaticContentService(StaticContentProvider contentProvider, IServiceProvider serviceProvider) : IHostedService
+    internal class StaticContentService : IHostedService
     {
-        private readonly StaticContentProvider _contentProvider = contentProvider;
-        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly string _webRootPath;
+        private readonly StaticContentProvider _contentProvider;
+
+        public StaticContentService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            _webRootPath = serviceProvider.GetService<IWebHostEnvironment>()!.WebRootPath!;
+            _contentProvider = serviceProvider.GetService<StaticContentProvider>()!;
+        }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var webRoot = _serviceProvider.GetService<IWebHostEnvironment>()!.WebRootPath;
-
-            var filePaths = Directory.GetFiles(webRoot, "*.*", SearchOption.AllDirectories);
+            var filePaths = Directory.GetFiles(_webRootPath, "*.*", SearchOption.AllDirectories);
 
             foreach (var filePath in filePaths)
             {
@@ -46,7 +52,6 @@ namespace StaticContentOptimizer
             using var scope = _serviceProvider.CreateScope();
             var contentTypeProvider = scope.ServiceProvider.GetService<FileExtensionContentTypeProvider>()!;
             var optimizerProvider = scope.ServiceProvider.GetService<ContentOptimizersProvider>()!;
-
 
             if (contentTypeProvider.TryGetContentType(filePath, out var contentType)
                 && optimizerProvider.TryGet(contentType, out var optimizer))
