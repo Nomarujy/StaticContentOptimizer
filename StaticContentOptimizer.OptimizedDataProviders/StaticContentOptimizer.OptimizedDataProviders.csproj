@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StaticContentOptimizer.Abstract\StaticContentOptimizer.Abstract.csproj" />
+  </ItemGroup>
+
 </Project>

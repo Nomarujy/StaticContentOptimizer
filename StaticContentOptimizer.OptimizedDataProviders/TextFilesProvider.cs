@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.StaticFiles;
+using StaticContentOptimizer.Abstract;
+using System.Text;
 
 namespace StaticContentOptimizer.OptimizedDataProviders
 {
