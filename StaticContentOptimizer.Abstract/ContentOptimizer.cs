@@ -3,20 +3,14 @@ using Microsoft.AspNetCore.StaticFiles;
 
 namespace StaticContentOptimizer.Abstract
 {
-    public abstract class OptimizedDataProvider
+    public abstract class ContentOptimizer(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment)
     {
-        protected OptimizedDataProvider(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment)
-        {
-            _contentTypeProvider = contentTypeProvider;
-            WebRoot = environment.WebRootPath;
-        }
-
-        private readonly FileExtensionContentTypeProvider _contentTypeProvider;
-        protected readonly string WebRoot;
+        private readonly FileExtensionContentTypeProvider _contentTypeProvider = contentTypeProvider;
+        protected readonly string WebRoot = environment.WebRootPath;
 
         public abstract string[] SuportedContentTypes { get; }
 
-        public abstract OptimizedStaticContent[] GetOptimizedData(string filePath);
+        public abstract StaticContent[] GetOptimizedData(string filePath);
 
         protected string GetRelativePath(string filePath)
         {

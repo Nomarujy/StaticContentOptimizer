@@ -2,38 +2,31 @@
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using StaticContentOptimizer.Abstract;
-using StaticContentOptimizer.OptimizedDataProviders;
+using StaticContentOptimizer.ContentOptimizers;
 
 namespace StaticContentOptimizer
 {
     public static class MidlewareExtension
     {
-
         public static IServiceCollection AddStaticContentOptimizer(this IServiceCollection services)
         {
-            services.AddScoped<OptimizedDataProvider, TextFilesProvider>();
-            services.AddScoped<FileExtensionContentTypeProvider>();
-            services.AddScoped<StaticContentFactory>();
+            services.AddScoped<ContentOptimizersProvider>()
+                .AddScoped<ContentOptimizer, TextContentOptimizer>();
+
+
 
             return services
-                .AddStaticContent()
-                .AddScoped<StaticContentOptimizerMidleware>();
+                .AddSingleton<FileExtensionContentTypeProvider>()
+                .AddSingleton<StaticContentProvider>()
+                .AddHostedService<StaticContentService>()
+                .AddSingleton<StaticContentMidleware>();
         }
 
         public static IApplicationBuilder UseStaticContentOptimizer(this IApplicationBuilder app)
         {
-            app.UseMiddleware<StaticContentOptimizerMidleware>();
+            app.UseMiddleware<StaticContentMidleware>();
 
             return app;
-        }
-
-        private static IServiceCollection AddStaticContent(this IServiceCollection services)
-        {
-            using var provider = services.BuildServiceProvider();
-            using var scope = provider.CreateScope();
-            var factory = scope.ServiceProvider.GetService<StaticContentFactory>()!;
-
-            return services.AddSingleton(factory.Build());
         }
     }
 }

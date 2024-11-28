@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using StaticContentOptimizer.Abstract;
 
 namespace StaticContentOptimizer
 {
-    public class StaticContentOptimizerMidleware(Dictionary<string, OptimizedStaticContent> staticContent, ILogger<StaticContentOptimizerMidleware> logger) : IMiddleware
+    internal class StaticContentMidleware(StaticContentProvider provider, ILogger<StaticContentMidleware> logger) : IMiddleware
     {
-        private readonly Dictionary<string, OptimizedStaticContent> _staticContent = staticContent;
-        private readonly ILogger<StaticContentOptimizerMidleware> _logger = logger;
+        private readonly StaticContentProvider _provider = provider;
+        private readonly ILogger<StaticContentMidleware> _logger = logger;
 
         private const int NotModifedStatusCode = 304;
         private const int SuccessStatusCode = 200;
 
         public Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            string requestPath = context.Request.Path;
+            string requestPath = context.Request.GetEncodedPathAndQuery();
 
-            if (_staticContent.TryGetValue(requestPath, out var value))
+            if (_provider.TryGetValue(requestPath, out var value))
             {
                 if (context.Request.Headers.IfModifiedSince == value.LastModifed)
                 {
@@ -43,7 +44,7 @@ namespace StaticContentOptimizer
             return Task.CompletedTask;
         }
 
-        private static async Task WriteRespnose(HttpContext context, OptimizedStaticContent staticContent)
+        private static async Task WriteRespnose(HttpContext context, StaticContent staticContent)
         {
             context.Response.StatusCode = SuccessStatusCode;
             context.Response.ContentType = staticContent.ContentType;

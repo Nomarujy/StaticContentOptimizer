@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.StaticFiles;
 using StaticContentOptimizer.Abstract;
 using System.Text;
 
-namespace StaticContentOptimizer.OptimizedDataProviders
+namespace StaticContentOptimizer.ContentOptimizers
 {
-    public sealed class TextFilesProvider(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment)
-        : OptimizedDataProvider(contentTypeProvider, environment)
+    public sealed class TextContentOptimizer(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment)
+        : ContentOptimizer(contentTypeProvider, environment)
     {
-        private readonly string[] suportedContentTypes =
+        private readonly string[] suportedExtensions =
         [
             "text/plain",
             "text/plain",
@@ -19,13 +19,13 @@ namespace StaticContentOptimizer.OptimizedDataProviders
             "text/xml"
         ];
 
-        public override string[] SuportedContentTypes => suportedContentTypes;
+        public override string[] SuportedContentTypes => suportedExtensions;
 
-        public override OptimizedStaticContent[] GetOptimizedData(string filePath)
+        public override StaticContent[] GetOptimizedData(string filePath)
         {
             string? contentType = GetContentType(filePath);
 
-            if (suportedContentTypes.Contains(contentType))
+            if (suportedExtensions.Contains(contentType))
             {
                 var uri = GetRelativePath(filePath);
 
@@ -33,7 +33,7 @@ namespace StaticContentOptimizer.OptimizedDataProviders
 
                 var lastModifed = File.GetLastWriteTime(filePath);
 
-                return [new OptimizedStaticContent(uri, contentType!, lastModifed, bytes)];
+                return [new StaticContent(uri, contentType!, lastModifed, bytes)];
             }
 
             return [];
