@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35521.163 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer", "StaticContentOptimizer\StaticContentOptimizer.csproj", "{FBC6568D-BDA9-45DE-8E8F-FC3F278B38D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer.Minifier", "StaticContentOptimizer.Minifier\StaticContentOptimizer.Minifier.csproj", "{0F22BF6F-1C94-41AD-AA62-25D915F3B7B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer.ImageResizer", "StaticContentOptimizer.ImageResizer\StaticContentOptimizer.ImageResizer.csproj", "{F951953B-6437-4BBC-BF02-A53D0D4C30F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template", "Template\Template.csproj", "{AE4C2FC2-C6FB-4A16-AC80-FF1441A9440E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer.Abstract", "StaticContentOptimizer.Abstract\StaticContentOptimizer.Abstract.csproj", "{781BC906-A49C-4F0F-AFDC-E1E23E57D79F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBC6568D-BDA9-45DE-8E8F-FC3F278B38D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBC6568D-BDA9-45DE-8E8F-FC3F278B38D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBC6568D-BDA9-45DE-8E8F-FC3F278B38D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBC6568D-BDA9-45DE-8E8F-FC3F278B38D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F22BF6F-1C94-41AD-AA62-25D915F3B7B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F22BF6F-1C94-41AD-AA62-25D915F3B7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F22BF6F-1C94-41AD-AA62-25D915F3B7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F22BF6F-1C94-41AD-AA62-25D915F3B7B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F951953B-6437-4BBC-BF02-A53D0D4C30F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F951953B-6437-4BBC-BF02-A53D0D4C30F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F951953B-6437-4BBC-BF02-A53D0D4C30F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F951953B-6437-4BBC-BF02-A53D0D4C30F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4C2FC2-C6FB-4A16-AC80-FF1441A9440E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4C2FC2-C6FB-4A16-AC80-FF1441A9440E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4C2FC2-C6FB-4A16-AC80-FF1441A9440E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4C2FC2-C6FB-4A16-AC80-FF1441A9440E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{781BC906-A49C-4F0F-AFDC-E1E23E57D79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{781BC906-A49C-4F0F-AFDC-E1E23E57D79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{781BC906-A49C-4F0F-AFDC-E1E23E57D79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{781BC906-A49C-4F0F-AFDC-E1E23E57D79F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
