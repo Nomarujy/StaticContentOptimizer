@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using StaticContentOptimizer.Abstract;
-using StaticContentOptimizer.Minifier;
+using StaticContentOptimizer.OptimizedDataProviders;
 
 namespace StaticContentOptimizer
 {
@@ -11,7 +11,7 @@ namespace StaticContentOptimizer
 
         public static IServiceCollection AddStaticContentOptimizer(this IServiceCollection services)
         {
-            services.AddScoped<DataOptimizer, TextOptimizer>();
+            services.AddScoped<OptimizedDataProvider, TextFilesProvider>();
             services.AddScoped<FileExtensionContentTypeProvider>();
             services.AddScoped<StaticContentFactory>();
 

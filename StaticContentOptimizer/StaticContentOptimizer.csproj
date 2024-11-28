@@ -12,7 +12,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\StaticContentOptimizer.Abstract\StaticContentOptimizer.Abstract.csproj" />
-      <ProjectReference Include="..\StaticContentOptimizer.ImageResizer\StaticContentOptimizer.ImageResizer.csproj" />
-      <ProjectReference Include="..\StaticContentOptimizer.Minifier\StaticContentOptimizer.Minifier.csproj" />
+      <ProjectReference Include="..\StaticContentOptimizer.OptimizedDataProviders\StaticContentOptimizer.OptimizedDataProviders.csproj" />
     </ItemGroup>
 </Project>

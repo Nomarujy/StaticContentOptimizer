@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.StaticFiles;
-using StaticContentOptimizer.Abstract;
-using System.Text;
+﻿using System.Text;
 
-namespace StaticContentOptimizer.Minifier
+namespace StaticContentOptimizer.OptimizedDataProviders
 {
-    public sealed class TextOptimizer(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment) : DataOptimizer
+    public sealed class TextFilesProvider(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment)
+        : OptimizedDataProvider(contentTypeProvider, environment)
     {
-        private readonly FileExtensionContentTypeProvider _contentTypeProvider = contentTypeProvider;
-        private readonly string _webRootPath = environment.WebRootPath;
-
         private readonly string[] suportedContentTypes =
         [
             "text/plain",
@@ -23,25 +18,22 @@ namespace StaticContentOptimizer.Minifier
 
         public override string[] SuportedContentTypes => suportedContentTypes;
 
-        public override OptimizedStaticContent[] Minify(string filePath)
+        public override OptimizedStaticContent[] GetOptimizedData(string filePath)
         {
-            if (_contentTypeProvider.TryGetContentType(filePath, out var contentType))
+            string? contentType = GetContentType(filePath);
+
+            if (suportedContentTypes.Contains(contentType))
             {
-                var uri = CreateUri(filePath);
+                var uri = GetRelativePath(filePath);
 
                 var bytes = GetBytes(filePath);
 
                 var lastModifed = File.GetLastWriteTime(filePath);
 
-                return [new OptimizedStaticContent(uri, contentType, lastModifed, bytes)];
+                return [new OptimizedStaticContent(uri, contentType!, lastModifed, bytes)];
             }
 
             return [];
-        }
-
-        private string CreateUri(string filePath)
-        {
-            return filePath.Replace(_webRootPath, string.Empty).Replace("\\", "/");
         }
 
         private static byte[] GetBytes(string filePath)
@@ -74,8 +66,8 @@ namespace StaticContentOptimizer.Minifier
             }
         }
 
-        private static char[] NextCharToScip = ['{', '(', ',', '>'];
-        private static char[] PrevCharToScip = [':', ',', '>'];
+        private static readonly char[] NextCharToScip = ['{', '(', ',', '>'];
+        private static readonly char[] PrevCharToScip = [':', ',', '>'];
 
         private static string RemoveSpace(string line)
         {
