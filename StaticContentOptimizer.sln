@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template", "Template\Templa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer.Abstract", "StaticContentOptimizer.Abstract\StaticContentOptimizer.Abstract.csproj", "{781BC906-A49C-4F0F-AFDC-E1E23E57D79F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer.OptimizedDataProviders", "StaticContentOptimizer.OptimizedDataProviders\StaticContentOptimizer.OptimizedDataProviders.csproj", "{953825F8-E764-4D8A-ABF3-7DE5CB68DBA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticContentOptimizer.ContentOptimizers", "StaticContentOptimizer.OptimizedDataProviders\StaticContentOptimizer.ContentOptimizers.csproj", "{953825F8-E764-4D8A-ABF3-7DE5CB68DBA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
