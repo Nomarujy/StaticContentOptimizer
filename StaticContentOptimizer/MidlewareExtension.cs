@@ -14,16 +14,17 @@ namespace StaticContentOptimizer
                 .AddScoped<ContentOptimizer, TextContentOptimizer>();
 
 
-
             return services
-                .AddSingleton<FileExtensionContentTypeProvider>()
+                .AddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>()
                 .AddSingleton<StaticContentProvider>()
-                .AddHostedService<StaticContentService>()
-                .AddSingleton<StaticContentMidleware>();
+                .AddScoped<StaticContentFactory>()
+                .AddScoped<StaticContentMidleware>()
+                .AddHostedService<StaticContentService>();
         }
 
         public static IApplicationBuilder UseStaticContentOptimizer(this IApplicationBuilder app)
         {
+
             app.UseMiddleware<StaticContentMidleware>();
 
             return app;

@@ -1,32 +1,27 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StaticContentOptimizer.Abstract;
-using StaticContentOptimizer.ContentOptimizers;
 
 namespace StaticContentOptimizer
 {
-    internal class StaticContentService : IHostedService
+    internal class StaticContentService(IServiceProvider serviceProvider) : IHostedService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly string _webRootPath;
-        private readonly StaticContentProvider _contentProvider;
-
-        public StaticContentService(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            _webRootPath = serviceProvider.GetService<IWebHostEnvironment>()!.WebRootPath!;
-            _contentProvider = serviceProvider.GetService<StaticContentProvider>()!;
-        }
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var filePaths = Directory.GetFiles(_webRootPath, "*.*", SearchOption.AllDirectories);
+            using var scope = _serviceProvider.CreateScope();
+            var services = scope.ServiceProvider;
+            var contentProvider = services.GetService<StaticContentProvider>()!;
+            var contentFactory = services.GetService<StaticContentFactory>()!;
+
+            var webRootPath = GetWebRootPath(scope);
+
+            var filePaths = Directory.GetFiles(webRootPath, "*.*", SearchOption.AllDirectories);
 
             foreach (var filePath in filePaths)
             {
-                UpdateStaticContent(filePath);
+                UpdateStaticContent(filePath, contentProvider, contentFactory);
             }
 
             return Task.CompletedTask;
@@ -37,29 +32,21 @@ namespace StaticContentOptimizer
             return Task.CompletedTask;
         }
 
-        private void UpdateStaticContent(string filePath)
+        private static string GetWebRootPath(IServiceScope scope)
         {
-            var contents = GetStaticContent(filePath);
+            var enviroment = scope.ServiceProvider.GetService<IWebHostEnvironment>()!;
+
+            return enviroment.WebRootPath;
+        }
+
+        private static void UpdateStaticContent(string filePath, StaticContentProvider contentProvider, StaticContentFactory contentFactory)
+        {
+            var contents = contentFactory.BuildStaticContentForFile(filePath);
 
             foreach (var content in contents)
             {
-                _contentProvider.AddOrUpdate(content);
-            };
-        }
-
-        private StaticContent[] GetStaticContent(string filePath)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var contentTypeProvider = scope.ServiceProvider.GetService<FileExtensionContentTypeProvider>()!;
-            var optimizerProvider = scope.ServiceProvider.GetService<ContentOptimizersProvider>()!;
-
-            if (contentTypeProvider.TryGetContentType(filePath, out var contentType)
-                && optimizerProvider.TryGet(contentType, out var optimizer))
-            {
-                return optimizer.GetOptimizedData(filePath);
+                contentProvider.AddOrUpdate(content);
             }
-
-            return [];
         }
     }
 }

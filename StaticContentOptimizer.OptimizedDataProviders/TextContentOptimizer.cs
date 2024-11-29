@@ -1,39 +1,34 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.StaticFiles;
+﻿using Microsoft.AspNetCore.Http;
 using StaticContentOptimizer.Abstract;
 using System.Text;
 
 namespace StaticContentOptimizer.ContentOptimizers
 {
-    public sealed class TextContentOptimizer(FileExtensionContentTypeProvider contentTypeProvider, IWebHostEnvironment environment)
-        : ContentOptimizer(contentTypeProvider, environment)
+    public sealed class TextContentOptimizer : ContentOptimizer
     {
-        private readonly string[] suportedExtensions =
+        private static readonly string[] suportedExtensions =
         [
-            "text/plain",
-            "text/plain",
-            "text/css",
-            "text/csv",
-            "text/html",
-            "text/javascript",
-            "text/xml"
+            ".txt",
+            ".css",
+            ".csv",
+            ".html",
+            ".js",
+            ".xml"
         ];
 
-        public override string[] SuportedContentTypes => suportedExtensions;
+        public override string[] SuportedExtensions => suportedExtensions;
 
-        public override StaticContent[] GetOptimizedData(string filePath)
+        public override Dictionary<QueryString, byte[]> GetOptimizedData(string filePath)
         {
-            string? contentType = GetContentType(filePath);
+            string? extension = Path.GetExtension(filePath);
 
-            if (suportedExtensions.Contains(contentType))
+            if (suportedExtensions.Contains(extension))
             {
-                var uri = GetRelativePath(filePath);
-
-                var bytes = GetBytes(filePath);
-
-                var lastModifed = File.GetLastWriteTime(filePath);
-
-                return [new StaticContent(uri, contentType!, lastModifed, bytes)];
+                Dictionary<QueryString, byte[]> data = new()
+                {
+                    {QueryString.Empty, GetBytes(filePath) }
+                };
+                return data;
             }
 
             return [];
