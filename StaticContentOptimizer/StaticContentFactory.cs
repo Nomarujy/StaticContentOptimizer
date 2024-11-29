@@ -20,20 +20,30 @@ namespace StaticContentOptimizer
 
         public StaticContent[] BuildStaticContentForFile(string filePath)
         {
+            Dictionary<QueryString, byte[]> optimizedData;
+
             if (_optimizersProvider.TryGet(Path.GetExtension(filePath), out var optimizer))
             {
-                Dictionary<QueryString, byte[]> optimizedData = optimizer.GetOptimizedData(filePath);
-
-                return CreateStaticContent(filePath, optimizedData);
+                optimizedData = optimizer.GetOptimizedData(filePath);
+            }
+            else
+            {
+                optimizedData = GetDefaultData(filePath);
             }
 
-            //TODO: IOptions to provide files by extension;
-            _logger.LogWarning("Sciping: {fileName}", GetFileName(filePath));
-            return [];
+            //TODO: Exlude static by options;
+            return CreateStaticContent(filePath, optimizedData);
         }
 
-        private static string GetFileName(string path)
-            => Path.GetFileName(path);
+        private static Dictionary<QueryString, byte[]> GetDefaultData(string filePath)
+        {
+            using var fileStream = File.OpenRead(filePath);
+            var buffer = new byte[fileStream.Length];
+
+            fileStream.ReadExactly(buffer);
+
+            return new() { { QueryString.Empty, buffer } };
+        }
 
         private StaticContent[] CreateStaticContent(string filePath, Dictionary<QueryString, byte[]> data)
         {
@@ -60,6 +70,24 @@ namespace StaticContentOptimizer
             return result;
         }
 
+        private string GetBaseUri(string filePath)
+        {
+            return filePath.Replace(_webRootPath, string.Empty)
+                .Replace("\\", "/");
+        }
+
+        private string GetContentType(string filePath)
+        {
+            if (_contentTypeProvider.TryGetContentType(filePath, out var contentType))
+                return contentType;
+            return "application/octet-stream";
+        }
+
+        private void LogCreating(string filePath, string uri)
+        {
+            _logger.LogDebug("Creating {file} at path: {path}", Path.GetFileName(filePath), uri);
+        }
+
         private static string AppendQuery(string uri, QueryString query)
         {
             string queryString = query.ToString();
@@ -73,24 +101,6 @@ namespace StaticContentOptimizer
             }
 
             return $"{uri}{queryString}";
-        }
-
-        private string GetContentType(string filePath)
-        {
-            if (_contentTypeProvider.TryGetContentType(filePath, out var contentType))
-                return contentType;
-            return "application/octet-stream";
-        }
-
-        private void LogCreating(string filePath, string uri)
-        {
-            _logger.LogDebug("Creating {file} at path: {path}", GetFileName(filePath), uri);
-        }
-
-        private string GetBaseUri(string filePath)
-        {
-            return filePath.Replace(_webRootPath, string.Empty)
-                .Replace("\\", "/");
         }
     }
 }
